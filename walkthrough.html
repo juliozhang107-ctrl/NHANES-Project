@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parallel Study Walkthrough: USFLI vs. Gold Standard Transient Elastography</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --primary-light: #eff6ff;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --bg-body: #f8fafc;
+            --bg-card: #ffffff;
+            --border-color: #e2e8f0;
+            --alert-blue-bg: #eff6ff;
+            --alert-blue-border: #3b82f6;
+            --alert-red-bg: #fef2f2;
+            --alert-red-border: #ef4444;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-dark);
+            line-height: 1.6;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header Style */
+        header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+            color: white;
+            padding: 3rem 2rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #ffffff;
+            letter-spacing: -0.025em;
+        }
+
+        header p {
+            color: #ffffff !important;
+            font-size: 1.1rem;
+            font-weight: 400;
+            opacity: 0.9;
+            max-width: 900px;
+        }
+
+        /* Card Layout */
+        .card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--primary-light);
+            padding-bottom: 0.5rem;
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+            color: #1e293b;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: #334155;
+        }
+
+        /* Tab Switcher for Flowcharts */
+        .tabs-container {
+            margin-top: 1.5rem;
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 0.5rem;
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-btn:hover:not(.active) {
+            color: #0f172a;
+        }
+
+        .tab-content {
+            display: none;
+            text-align: center;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .tab-content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border: 1px solid var(--border-color);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Image Display style for Trend */
+        .img-container-trend {
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .img-container-trend img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border: 1px solid var(--border-color);
+        }
+
+        /* Tables styling */
+        .table-responsive {
+            overflow-x: auto;
+            margin-top: 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f1f5f9;
+            color: #334155;
+            font-weight: 600;
+            padding: 1rem;
+            border-bottom: 2px solid var(--border-color);
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 0.85rem 1rem;
+            border-bottom: 1px solid #f1f5f9;
+            color: #475569;
+        }
+
+        tr:nth-child(even) {
+            background-color: #fafbfd;
+        }
+
+        tr:hover {
+            background-color: #f8fafc;
+        }
+
+        /* Specialized text alignments */
+        .txt-left { text-align: left; }
+        .txt-center { text-align: center; }
+        .txt-right { text-align: right; }
+        .bold-text { font-weight: 600; }
+
+        /* GitHub Style Alerts */
+        .alert {
+            border-left: 4px solid transparent;
+            border-radius: 6px;
+            padding: 1rem 1.25rem;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+        }
+
+        .alert-note {
+            background-color: var(--alert-blue-bg);
+            border-left-color: var(--alert-blue-border);
+            color: #1e3a8a;
+        }
+
+        .alert-important {
+            background-color: var(--alert-red-bg);
+            border-left-color: var(--alert-red-border);
+            color: #7f1d1d;
+        }
+
+        .alert-title {
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+        }
+
+        /* List Items */
+        ul {
+            list-style-type: none;
+            margin-left: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        li {
+            position: relative;
+            padding-left: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: #334155;
+        }
+
+        li::before {
+            content: "•";
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 1.2rem;
+            position: absolute;
+            left: 0;
+            top: -2px;
+        }
+
+        /* References Section */
+        ol.ref-list {
+            margin-left: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        ol.ref-list li {
+            padding-left: 0.5rem;
+            margin-bottom: 0.75rem;
+            color: #475569;
+            font-size: 0.9rem;
+        }
+
+        ol.ref-list li::before {
+            content: "";
+        }
+
+        a {
+            color: var(--primary);
+            text-decoration: none;
+            transition: color 0.1s ease;
+        }
+
+        a:hover {
+            color: var(--primary-hover);
+            text-decoration: underline;
+        }
+
+        .registry-list a {
+            font-family: monospace;
+            background-color: #f1f5f9;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 768px) {
+            body { padding: 1rem 0.5rem; }
+            header { padding: 2rem 1.25rem; }
+            header h1 { font-size: 1.8rem; }
+            .card { padding: 1.5rem 1rem; }
+            td, th { padding: 0.75rem 0.5rem; font-size: 0.85rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>USFLI vs. Gold Standard Transient Elastography</h1>
+        <p>A comparative epidemiological analysis of MASLD, MASH, and Advanced Liver Fibrosis / Cirrhosis cohorts using data from the National Health and Nutrition Examination Survey (NHANES).</p>
+    </header>
+
+    <!-- SECTION 1: Flowchart Selector -->
+    <div class="card">
+        <h2>Study Design Flowcharts</h2>
+        <p>Toggle below to compare the cohort inclusion criteria and raw sample sizes (<i>N</i>) of the two parallel study models:</p>
+        
+        <div class="tabs-container">
+            <div class="tab-buttons">
+                <button class="tab-btn active" onclick="switchTab(event, 'tab-primary')">Primary Study (NHANES 1999–2023)</button>
+                <button class="tab-btn" onclick="switchTab(event, 'tab-gold')">Gold Standard Study (NHANES 2017–2023)</button>
+            </div>
+            
+            <div id="tab-primary" class="tab-content active">
+                <img src="./masld_study_flowchart.png" alt="Primary Study Flowchart">
+                <p style="margin-top: 0.75rem; font-size: 0.9rem; font-style: italic; color: var(--text-muted);">Figure 1. Flowchart of blood-index based cohort selections (USFLI, FIB-4, APRI) for 1999–2023 cycles.</p>
+            </div>
+            
+            <div id="tab-gold" class="tab-content">
+                <img src="./gold_standard_flowchart.png" alt="Gold Standard Study Flowchart">
+                <p style="margin-top: 0.75rem; font-size: 0.9rem; font-style: italic; color: var(--text-muted);">Figure 2. Flowchart of transient elastography based cohort selections (CAP, FAST, LSM) for 2017–2023 cycles.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- PART A: PRIMARY STUDY -->
+    <div class="card">
+        <h2 style="color: #1e3a8a; border-bottom-color: #1e3a8a;">PART A: Primary Study (NHANES 1999–2023)</h2>
+        <p>The primary study evaluates non-invasive blood-based indexes—the U.S. Fatty Liver Index (USFLI > 30) for steatosis [1], FIB-4 > 2.67 for high-risk MASH [2], and APRI thresholds for fibrosis/cirrhosis [3].</p>
+
+        <h3>A.1. Longitudinal Prevalence Results (NHANES 1999–2023)</h3>
+        <p>Below is the summary table of positive cases (USFLI > 30) and survey-weighted estimates for U.S. adults aged &ge; 20 years:</p>
+        
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="txt-left">NHANES Cycle</th>
+                        <th class="txt-center">Raw USFLI > 30 N</th>
+                        <th class="txt-center">Raw Prevalence (%)</th>
+                        <th class="txt-center">Weighted Prevalence (%)</th>
+                        <th class="txt-center">Weighted Population Size N</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td class="bold-text txt-left">1999-2000</td><td class="txt-center">616</td><td class="txt-center">34.39%</td><td class="txt-center bold-text">27.88%</td><td class="txt-center">54,046,125</td></tr>
+                    <tr><td class="bold-text txt-left">2001-2002</td><td class="txt-center">701</td><td class="txt-center">33.65%</td><td class="txt-center bold-text">30.25%</td><td class="txt-center">59,380,012</td></tr>
+                    <tr><td class="bold-text txt-left">2003-2004</td><td class="txt-center">539</td><td class="txt-center">28.73%</td><td class="txt-center bold-text">26.96%</td><td class="txt-center">52,620,852</td></tr>
+                    <tr><td class="bold-text txt-left">2005-2006</td><td class="txt-center">556</td><td class="txt-center">29.56%</td><td class="txt-center bold-text">28.56%</td><td class="txt-center">57,287,665</td></tr>
+                    <tr><td class="bold-text txt-left">2007-2008</td><td class="txt-center">786</td><td class="txt-center">35.07%</td><td class="txt-center bold-text">30.76%</td><td class="txt-center">63,044,528</td></tr>
+                    <tr><td class="bold-text txt-left">2009-2010</td><td class="txt-center">960</td><td class="txt-center">38.43%</td><td class="txt-center bold-text">34.83%</td><td class="txt-center">73,016,619</td></tr>
+                    <tr><td class="bold-text txt-left">2011-2012</td><td class="txt-center">725</td><td class="txt-center">33.89%</td><td class="txt-center bold-text">33.78%</td><td class="txt-center">70,991,388</td></tr>
+                    <tr><td class="bold-text txt-left">2013-2014</td><td class="txt-center">688</td><td class="txt-center">30.67%</td><td class="txt-center bold-text">30.57%</td><td class="txt-center">66,190,995</td></tr>
+                    <tr><td class="bold-text txt-left">2015-2016</td><td class="txt-center">745</td><td class="txt-center">34.91%</td><td class="txt-center bold-text">33.31%</td><td class="txt-center">74,182,474</td></tr>
+                    <tr><td class="bold-text txt-left">2017-2018</td><td class="txt-center">821</td><td class="txt-center">38.22%</td><td class="txt-center bold-text">35.63%</td><td class="txt-center">80,795,840</td></tr>
+                    <tr style="background-color: #f0fdf4;"><td class="bold-text txt-left">2017-2020 (Pre-Pandemic)*</td><td class="txt-center">1,366</td><td class="txt-center">38.21%</td><td class="txt-center bold-text">36.07%</td><td class="txt-center">82,704,779</td></tr>
+                    <tr><td class="bold-text txt-left">2021-2023 (Post-Pandemic)</td><td class="txt-center">991</td><td class="txt-center">36.91%</td><td class="txt-center bold-text">35.16%</td><td class="txt-center">78,587,877</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="alert alert-note">
+            <div class="alert-title">Note</div>
+            <strong>2017-2020 Combined Cycle:</strong> The CDC combined the partial 2019–2020 data (interrupted by COVID-19) with 2017–2018 to create a representative 4-year cycle. This is marked with an asterisk (*) above.
+        </div>
+
+        <h3>A.2. Visualizing MASLD, MASH, & Fibrosis Prevalence Trends</h3>
+        <p>The chart below shows the survey-weighted prevalence trends for MASLD (USFLI > 30), MASH (FIB-4 > 2.67), and Significant Fibrosis (APRI > 0.5) in U.S. adults over time with 95% confidence intervals:</p>
+        
+        <div class="img-container-trend">
+            <img src="./usfli_prevalence_trend.png" alt="MASLD, MASH, and Fibrosis Trends">
+            <p style="margin-top: 0.5rem; font-size: 0.9rem; font-style: italic; color: var(--text-muted);">Figure 3. Multi-line longitudinal prevalence trend (weighted %) with 95% confidence intervals.</p>
+        </div>
+
+        <h3>A.3. Primary Cohort Comorbidity & Lifestyle Stratification</h3>
+        <p>Below is the integrated comorbidity stratification table for the primary study, presenting the general <strong>MASLD</strong> cohort (N = 8,673), the <strong>MASH</strong> cohort (N = 378), the <strong>Significant Fibrosis</strong> cohort (N = 760), and the <strong>Cirrhosis</strong> cohort (N = 48) side-by-side:</p>
+
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="txt-left">Category</th>
+                        <th class="txt-left">Stratum / Subgroup</th>
+                        <th class="txt-center">MASLD Raw N</th>
+                        <th class="txt-center">MASLD Wt %</th>
+                        <th class="txt-center">MASH Raw N</th>
+                        <th class="txt-center">MASH Wt %</th>
+                        <th class="txt-center">Fibrosis Raw N</th>
+                        <th class="txt-center">Fibrosis Wt %</th>
+                        <th class="txt-center">Cirrhosis Raw N</th>
+                        <th class="txt-center">Cirrhosis Wt %</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td rowspan="5" class="bold-text">Obesity/BMI</td><td>Normal (18.5–24.9)</td><td class="txt-center">409</td><td class="txt-center">4.00%</td><td class="txt-center">47</td><td class="txt-center">15.76%</td><td class="txt-center">71</td><td class="txt-center">9.67%</td><td class="txt-center">5</td><td class="txt-center">17.96%</td></tr>
+                    <tr><td>Overweight (25.0–29.9)</td><td class="txt-center">2,350</td><td class="txt-center">24.66%</td><td class="txt-center">131</td><td class="txt-center">34.25%</td><td class="txt-center">246</td><td class="txt-center">30.09%</td><td class="txt-center">21</td><td class="txt-center">39.54%</td></tr>
+                    <tr><td>Obese (&ge; 30.0)</td><td class="txt-center">5,862</td><td class="txt-center">71.30%</td><td class="txt-center">194</td><td class="txt-center">50.00%</td><td class="txt-center">438</td><td class="txt-center">60.16%</td><td class="txt-center">21</td><td class="txt-center">42.50%</td></tr>
+                    <tr><td>Underweight (&lt;18.5)</td><td class="txt-center">4</td><td class="txt-center">0.04%</td><td class="txt-center">0</td><td class="txt-center">0.00%</td><td class="txt-center">1</td><td class="txt-center">0.08%</td><td class="txt-center">0</td><td class="txt-center">0.00%</td></tr>
+                    <tr style="color: var(--text-muted);"><td style="font-style: italic;">Missing / Unknown</td><td class="txt-center">48</td><td class="txt-center">--</td><td class="txt-center">6</td><td class="txt-center">--</td><td class="txt-center">4</td><td class="txt-center">--</td><td class="txt-center">1</td><td class="txt-center">--</td></tr>
+                    
+                    <tr><td rowspan="3" class="bold-text">Type 2 DM</td><td>Diabetes</td><td class="txt-center">2,817</td><td class="txt-center">26.97%</td><td class="txt-center">173</td><td class="txt-center">37.98%</td><td class="txt-center">296</td><td class="txt-center">33.99%</td><td class="txt-center">16</td><td class="txt-center">27.32%</td></tr>
+                    <tr><td>No Diabetes</td><td class="txt-center">5,856</td><td class="txt-center">73.03%</td><td class="txt-center">205</td><td class="txt-center">62.02%</td><td class="txt-center">464</td><td class="txt-center">66.01%</td><td class="txt-center">32</td><td class="txt-center">72.68%</td></tr>
+                    <tr style="color: var(--text-muted);"><td style="font-style: italic;">Missing / Unknown</td><td class="txt-center">0</td><td class="txt-center">--</td><td class="txt-center">0</td><td class="txt-center">--</td><td class="txt-center">0</td><td class="txt-center">--</td><td class="txt-center">0</td><td class="txt-center">--</td></tr>
+
+                    <tr><td rowspan="3" class="bold-text">Hypertension</td><td>Hypertension</td><td class="txt-center">5,315</td><td class="txt-center">59.31%</td><td class="txt-center">286</td><td class="txt-center">75.06%</td><td class="txt-center">485</td><td class="txt-center">62.67%</td><td class="txt-center">27</td><td class="txt-center">58.20%</td></tr>
+                    <tr><td>No Hypertension</td><td class="txt-center">3,354</td><td class="txt-center">40.69%</td><td class="txt-center">92</td><td class="txt-center">24.94%</td><td class="txt-center">275</td><td class="txt-center">37.33%</td><td class="txt-center">21</td><td class="txt-center">41.80%</td></tr>
+                    <tr style="color: var(--text-muted);"><td style="font-style: italic;">Missing / Unknown</td><td class="txt-center">4</td><td class="txt-center">--</td><td class="txt-center">0</td><td class="txt-center">--</td><td class="txt-center">0</td><td class="txt-center">--</td><td class="txt-center">0</td><td class="txt-center">--</td></tr>
+
+                    <tr><td rowspan="3" class="bold-text">Dyslipidemia</td><td>Dyslipidemia</td><td class="txt-center">6,832</td><td class="txt-center">79.56%</td><td class="txt-center">281</td><td class="txt-center">75.00%</td><td class="txt-center">586</td><td class="txt-center">78.83%</td><td class="txt-center">30</td><td class="txt-center">62.32%</td></tr>
+                    <tr><td>No Dyslipidemia</td><td class="txt-center">1,841</td><td class="txt-center">20.44%</td><td class="txt-center">97</td><td class="txt-center">25.00%</td><td class="txt-center">174</td><td class="txt-center">21.17%</td><td class="txt-center">18</td><td class="txt-center">37.68%</td></tr>
+                    <tr style="color: var(--text-muted);"><td style="font-style: italic;">Missing / Unknown</td><td class="txt-center">0</td><td class="txt-center">--</td><td class="txt-center">0</td><td class="txt-center">--</td><td class="txt-center">0</td><td class="txt-center">--</td><td class="txt-center">0</td><td class="txt-center">--</td></tr>
+
+                    <tr><td rowspan="4" class="bold-text">Diet (Calorie)</td><td>Low Calorie (Tertile 1)</td><td class="txt-center">2,744</td><td class="txt-center">28.02%</td><td class="txt-center">147</td><td class="txt-center">37.55%</td><td class="txt-center">226</td><td class="txt-center">28.55%</td><td class="txt-center">10</td><td class="txt-center">23.63%</td></tr>
+                    <tr><td>Medium Calorie (Tertile 2)</td><td class="txt-center">2,743</td><td class="txt-center">33.50%</td><td class="txt-center">108</td><td class="txt-center">30.37%</td><td class="txt-center">214</td><td class="txt-center">29.37%</td><td class="txt-center">11</td><td class="txt-center">18.22%</td></tr>
+                    <tr><td>High Calorie (Tertile 3)</td><td class="txt-center">2,744</td><td class="txt-center">38.47%</td><td class="txt-center">104</td><td class="txt-center">32.08%</td><td class="txt-center">273</td><td class="txt-center">42.08%</td><td class="txt-center">25</td><td class="txt-center">58.15%</td></tr>
+                    <tr style="color: var(--text-muted);"><td style="font-style: italic;">Missing / Unknown</td><td class="txt-center">442</td><td class="txt-center">--</td><td class="txt-center">19</td><td class="txt-center">--</td><td class="txt-center">47</td><td class="txt-center">--</td><td class="txt-center">2</td><td class="txt-center">--</td></tr>
+
+                    <tr><td rowspan="3" class="bold-text">Physical Activity</td><td>Active</td><td class="txt-center">3,790</td><td class="txt-center">51.55%</td><td class="txt-center">164</td><td class="txt-center">46.21%</td><td class="txt-center">377</td><td class="txt-center">52.53%</td><td class="txt-center">19</td><td class="txt-center">32.32%</td></tr>
+                    <tr><td>Inactive</td><td class="txt-center">3,892</td><td class="txt-center">48.45%</td><td class="txt-center">170</td><td class="txt-center">53.79%</td><td class="txt-center">326</td><td class="txt-center">47.47%</td><td class="txt-center">25</td><td class="txt-center">67.68%</td></tr>
+                    <tr style="color: var(--text-muted);"><td style="font-style: italic;">Missing / Unknown</td><td class="txt-center">991</td><td class="txt-center">--</td><td class="txt-center">44</td><td class="txt-center">--</td><td class="txt-center">57</td><td class="txt-center">--</td><td class="txt-center">4</td><td class="txt-center">--</td></tr>
+
+                    <tr><td rowspan="4" class="bold-text">Smoking Status</td><td>Never Smoker</td><td class="txt-center">4,427</td><td class="txt-center">54.98%</td><td class="txt-center">147</td><td class="txt-center">38.88%</td><td class="txt-center">332</td><td class="txt-center">46.30%</td><td class="txt-center">14</td><td class="txt-center">42.85%</td></tr>
+                    <tr><td>Former Smoker</td><td class="txt-center">2,263</td><td class="txt-center">28.77%</td><td class="txt-center">147</td><td class="txt-center">44.84%</td><td class="txt-center">216</td><td class="txt-center">33.74%</td><td class="txt-center">13</td><td class="txt-center">24.26%</td></tr>
+                    <tr><td>Current Smoker</td><td class="txt-center">1,289</td><td class="txt-center">16.25%</td><td class="txt-center">59</td><td class="txt-center">16.28%</td><td class="txt-center">151</td><td class="txt-center">19.96%</td><td class="txt-center">16</td><td class="txt-center">32.89%</td></tr>
+                    <tr style="color: var(--text-muted);"><td style="font-style: italic;">Missing / Unknown</td><td class="txt-center">694</td><td class="txt-center">--</td><td class="txt-center">25</td><td class="txt-center">--</td><td class="txt-center">61</td><td class="txt-center">--</td><td class="txt-center">5</td><td class="txt-center">--</td></tr>
+
+                    <tr style="background-color: #fffbeb;"><td rowspan="3" class="bold-text">Mortality (1999–2018)</td><td>Alive</td><td class="txt-center">5,040</td><td class="txt-center">84.38%</td><td class="txt-center">129</td><td class="txt-center">49.32%</td><td class="txt-center">442</td><td class="txt-center">78.00%</td><td class="txt-center">23</td><td class="txt-center">50.36%</td></tr>
+                    <tr style="background-color: #fffbeb;"><td class="bold-text">Deceased</td><td class="txt-center">1,272</td><td class="txt-center bold-text" style="color: #b45309;">15.62%</td><td class="txt-center">146</td><td class="txt-center bold-text" style="color: #b45309;">50.68%</td><td class="txt-center">154</td><td class="txt-center bold-text" style="color: #b45309;">22.00%</td><td class="txt-center">16</td><td class="txt-center bold-text" style="color: #b45309;">49.64%</td></tr>
+                    <tr style="background-color: #fffbeb; color: var(--text-muted);"><td style="font-style: italic;">Missing / Unknown</td><td class="txt-center">0</td><td class="txt-center">--</td><td class="txt-center">103</td><td class="txt-center">--</td><td class="txt-center">0</td><td class="txt-center">--</td><td class="txt-center">9</td><td class="txt-center">--</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- PART B: GOLD STANDARD STUDY -->
+    <div class="card">
+        <h2 style="color: #166534; border-bottom-color: #166534;">PART B: Gold Standard Study (NHANES 2017–2023)</h2>
+        <p>The gold standard study restricted the sample to the <strong>5,699</strong> adults aged &ge; 20 years in the morning fasting subsample who had valid transient elastography (FibroScan) measurements in the 2017–2020 pre-pandemic and 2021–2023 cycles.</p>
+        
+        <p>Survey weights were combined to represent the 6-year period:
+            <ul>
+                <li><strong>2017–2020 Fasting weights</strong> were scaled by 2/3.</li>
+                <li><strong>2021–2023 Fasting weights</strong> were scaled by 1/3.</li>
+            </ul>
+        </p>
+
+        <h3>B.1. Gold Standard Cohort Sizes</h3>
+        <ul>
+            <li><strong>MASLD (CAP &ge; 285 dB/m + CMR) [4,5]:</strong> Raw N = 2,586</li>
+            <li><strong>MASH (MASLD + FAST &ge; 0.35) [6]:</strong> Raw N = 417</li>
+            <li><strong>Cirrhosis (MASLD + LSM > 13.6 kPa) [7]:</strong> Raw N = 172</li>
+        </ul>
+
+        <h3>B.2. Gold Standard Comorbidity & Lifestyle Stratification</h3>
+        <p>Below is the summary stratification table of the three gold-standard cohorts, styled symmetrically (Raw N followed by survey-weighted percentage side-by-side for each cohort):</p>
+
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="txt-left">Category</th>
+                        <th class="txt-left">Stratum / Subgroup</th>
+                        <th class="txt-center">MASLD Raw N</th>
+                        <th class="txt-center">MASLD Wt %</th>
+                        <th class="txt-center">MASH Raw N</th>
+                        <th class="txt-center">MASH Wt %</th>
+                        <th class="txt-center">Cirrhosis Raw N</th>
+                        <th class="txt-center">Cirrhosis Wt %</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td rowspan="5" class="bold-text">Obesity/BMI</td><td>Normal (18.5–24.9)</td><td class="txt-center">139</td><td class="txt-center">4.42%</td><td class="txt-center">18</td><td class="txt-center">2.69%</td><td class="txt-center">3</td><td class="txt-center">1.28%</td></tr>
+                    <tr><td>Overweight (25.0–29.9)</td><td class="txt-center">688</td><td class="txt-center">26.29%</td><td class="txt-center">77</td><td class="txt-center">17.09%</td><td class="txt-center">22</td><td class="txt-center">11.50%</td></tr>
+                    <tr><td>Obese (&ge; 30.0)</td><td class="txt-center">1,736</td><td class="txt-center">69.25%</td><td class="txt-center">317</td><td class="txt-center">79.97%</td><td class="txt-center">145</td><td class="txt-center">87.21%</td></tr>
+                    <tr><td>Underweight (&lt;18.5)</td><td class="txt-center">2</td><td class="txt-center">0.04%</td><td class="txt-center">1</td><td class="txt-center">0.25%</td><td class="txt-center">0</td><td class="txt-center">0.00%</td></tr>
+                    <tr style="color: var(--text-muted);"><td style="font-style: italic;">Missing / Unknown</td><td class="txt-center">23</td><td class="txt-center">--</td><td class="txt-center">4</td><td class="txt-center">--</td><td class="txt-center">2</td><td class="txt-center">--</td></tr>
+
+                    <tr><td rowspan="3" class="bold-text">Type 2 DM</td><td>Diabetes</td><td class="txt-center">899</td><td class="txt-center">29.41%</td><td class="txt-center">198</td><td class="txt-center">40.51%</td><td class="txt-center">104</td><td class="txt-center">62.38%</td></tr>
+                    <tr><td>No Diabetes</td><td class="txt-center">1,687</td><td class="txt-center">70.59%</td><td class="txt-center">219</td><td class="txt-center">59.49%</td><td class="txt-center">68</td><td class="txt-center">37.62%</td></tr>
+                    <tr style="color: var(--text-muted);"><td style="font-style: italic;">Missing / Unknown</td><td class="txt-center">2</td><td class="txt-center">--</td><td class="txt-center">0</td><td class="txt-center">--</td><td class="txt-center">0</td><td class="txt-center">--</td></tr>
+
+                    <tr><td rowspan="3" class="bold-text">Hypertension</td><td>Hypertension</td><td class="txt-center">1,265</td><td class="txt-center">43.07%</td><td class="txt-center">229</td><td class="txt-center">46.53%</td><td class="txt-center">120</td><td class="txt-center">65.81%</td></tr>
+                    <tr><td>No Hypertension</td><td class="txt-center">1,321</td><td class="txt-center">56.93%</td><td class="txt-center">188</td><td class="txt-center">53.47%</td><td class="txt-center">52</td><td class="txt-center">34.19%</td></tr>
+                    <tr style="color: var(--text-muted);"><td style="font-style: italic;">Missing / Unknown</td><td class="txt-center">2</td><td class="txt-center">--</td><td class="txt-center">0</td><td class="txt-center">--</td><td class="txt-center">0</td><td class="txt-center">--</td></tr>
+
+                    <tr><td rowspan="3" class="bold-text">Dyslipidemia</td><td>Dyslipidemia</td><td class="txt-center">2,075</td><td class="txt-center">81.41%</td><td class="txt-center">350</td><td class="txt-center">86.47%</td><td class="txt-center">140</td><td class="txt-center">83.50%</td></tr>
+                    <tr><td>No Dyslipidemia</td><td class="txt-center">512</td><td class="txt-center">18.59%</td><td class="txt-center">67</td><td class="txt-center">13.53%</td><td class="txt-center">32</td><td class="txt-center">16.50%</td></tr>
+                    <tr style="color: var(--text-muted);"><td style="font-style: italic;">Missing / Unknown</td><td class="txt-center">1</td><td class="txt-center">--</td><td class="txt-center">0</td><td class="txt-center">--</td><td class="txt-center">0</td><td class="txt-center">--</td></tr>
+
+                    <tr><td rowspan="4" class="bold-text">Diet (Calorie)</td><td>Low Calorie (Tertile 1)</td><td class="txt-center">727</td><td class="txt-center">28.06%</td><td class="txt-center">96</td><td class="txt-center">22.30%</td><td class="txt-center">43</td><td class="txt-center">33.66%</td></tr>
+                    <tr><td>Medium Calorie (Tertile 2)</td><td class="txt-center">750</td><td class="txt-center">31.76%</td><td class="txt-center">113</td><td class="txt-center">27.98%</td><td class="txt-center">51</td><td class="txt-center">24.66%</td></tr>
+                    <tr><td>High Calorie (Tertile 3)</td><td class="txt-center">790</td><td class="txt-center">40.18%</td><td class="txt-center">151</td><td class="txt-center">49.72%</td><td class="txt-center">61</td><td class="txt-center">41.68%</td></tr>
+                    <tr style="color: var(--text-muted);"><td style="font-style: italic;">Missing / Unknown</td><td class="txt-center">321</td><td class="txt-center">--</td><td class="txt-center">57</td><td class="txt-center">--</td><td class="txt-center">17</td><td class="txt-center">--</td></tr>
+
+                    <tr><td rowspan="3" class="bold-text">Physical Activity</td><td>Active</td><td class="txt-center">992</td><td class="txt-center">50.30%</td><td class="txt-center">149</td><td class="txt-center">45.83%</td><td class="txt-center">57</td><td class="txt-center">44.42%</td></tr>
+                    <tr><td>Inactive</td><td class="txt-center">1,596</td><td class="txt-center">49.70%</td><td class="txt-center">268</td><td class="txt-center">54.17%</td><td class="txt-center">115</td><td class="txt-center">55.58%</td></tr>
+                    <tr style="color: var(--text-muted);"><td style="font-style: italic;">Missing / Unknown</td><td class="txt-center">0</td><td class="txt-center">--</td><td class="txt-center">0</td><td class="txt-center">--</td><td class="txt-center">0</td><td class="txt-center">--</td></tr>
+
+                    <tr><td rowspan="4" class="bold-text">Smoking Status</td><td>Never Smoker</td><td class="txt-center">1,446</td><td class="txt-center">56.70%</td><td class="txt-center">226</td><td class="txt-center">50.82%</td><td class="txt-center">98</td><td class="txt-center">55.78%</td></tr>
+                    <tr><td>Former Smoker</td><td class="txt-center">734</td><td class="txt-center">28.52%</td><td class="txt-center">128</td><td class="txt-center">32.39%</td><td class="txt-center">54</td><td class="txt-center">33.87%</td></tr>
+                    <tr><td>Current Smoker</td><td class="txt-center">407</td><td class="txt-center">14.78%</td><td class="txt-center">63</td><td class="txt-center">16.79%</td><td class="txt-center">20</td><td class="txt-center">10.35%</td></tr>
+                    <tr style="color: var(--text-muted);"><td style="font-style: italic;">Missing / Unknown</td><td class="txt-center">1</td><td class="txt-center">--</td><td class="txt-center">0</td><td class="txt-center">--</td><td class="txt-center">0</td><td class="txt-center">--</td></tr>
+
+                    <tr style="background-color: #f8fafc; color: var(--text-muted);"><td rowspan="3" class="bold-text">Mortality</td><td>Alive</td><td class="txt-center">N/A</td><td class="txt-center">N/A</td><td class="txt-center">N/A</td><td class="txt-center">N/A</td><td class="txt-center">N/A</td><td class="txt-center">N/A</td></tr>
+                    <tr style="background-color: #f8fafc; color: var(--text-muted);"><td class="bold-text">Deceased</td><td class="txt-center">N/A</td><td class="txt-center">N/A</td><td class="txt-center">N/A</td><td class="txt-center">N/A</td><td class="txt-center">N/A</td><td class="txt-center">N/A</td></tr>
+                    <tr style="background-color: #f8fafc; color: var(--text-muted);"><td style="font-style: italic;">Missing / Unknown</td><td class="txt-center">N/A</td><td class="txt-center">N/A</td><td class="txt-center">N/A</td><td class="txt-center">N/A</td><td class="txt-center">N/A</td><td class="txt-center">N/A</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="alert alert-important">
+            <div class="alert-title">Important</div>
+            <strong>Mortality Data Availability Note:</strong> No public-use Linked Mortality Files are available for NHANES cycles after 2018 (including the 2019-2020 pre-pandemic and 2021-2023 cohorts). In addition, because NCHS re-assigned participant SEQN IDs in the combined 2017-2020 pre-pandemic cycle (<code>P_DEMO</code>), linkage of the 2017-2018 subset is not possible using public files. Thus, mortality statistics are marked as N/A.
+        </div>
+    </div>
+
+    <!-- REFERENCES SECTION -->
+    <div class="card">
+        <h2>References</h2>
+        <ol class="ref-list">
+            <li><strong>Ruhl CE, Everhart JE.</strong> Fatty liver indices in the multiethnic United States National Health and Nutrition Examination Survey. <em>Alimentary Pharmacology & Therapeutics</em>. Jan 2015;41(1):65-76. doi:<a href="https://doi.org/10.1111/apt.13012" target="_blank">10.1111/apt.13012</a>. PMID: <a href="https://pubmed.ncbi.nlm.nih.gov/25348633/" target="_blank">25348633</a></li>
+            <li><strong>Targher G, Valenti L, Byrne CD.</strong> Metabolic Dysfunction–Associated Steatotic Liver Disease. <em>The New England Journal of Medicine</em>. 2025.</li>
+            <li><strong>Dreytser E, Blyuss O, Mudrova A, et al.</strong> Aspartate Aminotransferase-to-Platelet Ratio Index (APRI) for Staging of Fibrosis in Adults With Chronic Hepatitis C. <em>The Cochrane Database of Systematic Reviews</em>. 2025.</li>
+            <li><strong>Lee BP, Dodge JL, Terrault NA.</strong> National prevalence estimates for steatotic liver disease and subclassifications using consensus nomenclature. <em>Hepatology</em>. Mar 1 2024;79(3):666-673. doi:<a href="https://doi.org/10.1097/HEP.0000000000000604" target="_blank">10.1097/HEP.0000000000000604</a></li>
+            <li><strong>Rinella ME, Lazarus JV, Ratziu V, et al.</strong> A multisociety Delphi consensus statement on new fatty liver disease nomenclature. <em>Hepatology</em>. Dec 1 2023;78(6):1966-1986. doi:<a href="https://doi.org/10.1097/HEP.0000000000000520" target="_blank">10.1097/HEP.0000000000000520</a></li>
+            <li><strong>Ravaioli F, Dajti E, Mantovani A, et al.</strong> Diagnostic Accuracy of FibroScan-AST (FAST) Score for the Non-Invasive Identification of Patients With Fibrotic Non-Alcoholic Steatohepatitis: A Systematic Review and Meta-Analysis. <em>Gut</em>. 2023.</li>
+            <li><strong>Sterling RK, Duarte-Rojo A, Patel K, et al.</strong> AASLD Practice Guideline on Imaging-Based Noninvasive Liver Disease Assessment of Hepatic Fibrosis and Steatosis. <em>Hepatology</em>. 2025.</li>
+        </ol>
+    </div>
+
+    <!-- REGISTRY CARD -->
+    <div class="card">
+        <h2>File Registry</h2>
+        <ul class="registry-list">
+            <li><strong>Gold Standard Study Script:</strong> <a href="file:///Users/juliomin/Desktop/Academic_Epidemiology/Epi III final project Dr Kang/R Studio/gold_standard_study.R">gold_standard_study.R</a></li>
+            <li><strong>Gold Standard Stratification CSV:</strong> <a href="file:///Users/juliomin/Desktop/Academic_Epidemiology/Epi III final project Dr Kang/R Studio/gold_standard_stratification.csv">gold_standard_stratification.csv</a></li>
+            <li><strong>Gold Patient-Level Dataset CSV:</strong> <a href="file:///Users/juliomin/Desktop/Academic_Epidemiology/Epi III final project Dr Kang/R Studio/usfli_nhanes_gold.csv">usfli_nhanes_gold.csv</a></li>
+            <li><strong>Gold Flowchart Image PNG:</strong> <a href="file:///Users/juliomin/Desktop/Academic_Epidemiology/Epi III final project Dr Kang/R Studio/gold_standard_flowchart.png">gold_standard_flowchart.png</a></li>
+            <li><strong>Primary Flowchart Image PNG:</strong> <a href="file:///Users/juliomin/Desktop/Academic_Epidemiology/Epi III final project Dr Kang/R Studio/masld_study_flowchart.png">masld_study_flowchart.png</a></li>
+            <li><strong>Primary Trend Image PNG:</strong> <a href="file:///Users/juliomin/Desktop/Academic_Epidemiology/Epi III final project Dr Kang/R Studio/usfli_prevalence_trend.png">usfli_prevalence_trend.png</a></li>
+        </ul>
+    </div>
+</div>
+
+<script>
+    function switchTab(evt, tabId) {
+        var tabContents = document.getElementsByClassName("tab-content");
+        for (var i = 0; i < tabContents.length; i++) {
+            tabContents[i].classList.remove("active");
+        }
+        var tabButtons = document.getElementsByClassName("tab-btn");
+        for (var i = 0; i < tabButtons.length; i++) {
+            tabButtons[i].classList.remove("active");
+        }
+        document.getElementById(tabId).classList.add("active");
+        evt.currentTarget.classList.add("active");
+    }
+</script>
+
+</body>
+</html>
